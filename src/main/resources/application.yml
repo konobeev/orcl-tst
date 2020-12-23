@@ -1,0 +1,13 @@
+# Oracle settings
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/ORCLPDB1
+    username: app_owner
+    password: 12345
+    driver-class-name: oracle.jdbc.OracleDriver
+    # driver-class-name: oracle.jdbc.driver.OracleDriver
+
+    # HikariCP settings
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 5

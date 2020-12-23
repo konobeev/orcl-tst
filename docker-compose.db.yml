@@ -1,0 +1,8 @@
+# password 12345
+oracle19c:
+  image: oracle/database:19.3.0-ee
+  ports:
+    - "1521:1521"
+    - "5500:5500"
+  volumes:
+    - "/Users/michael/docker/oradata:/opt/oracle/oradata"
