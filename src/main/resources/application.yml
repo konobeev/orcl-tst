@@ -11,3 +11,8 @@ spring:
     hikari:
       connection-timeout: 60000
       maximum-pool-size: 5
+
+application:
+  region: "UK"
+  endpoint: "http://localhost:8080"
+  ttl: 10s
