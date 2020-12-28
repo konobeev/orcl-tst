@@ -1,4 +1,4 @@
-package com.example.databasedemo.database.mapper;
+package com.example.databasedemo.database.custom.mapper;
 
 import static java.sql.Types.STRUCT;
 

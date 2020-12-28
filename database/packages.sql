@@ -6,6 +6,11 @@ IS
     --PROCEDURE get_account_by(p_account in ACCOUNT_T, p_result out ACCOUNT_ARRAY_T);
     FUNCTION get_all_accounts_f RETURN ACCOUNT_ARRAY_T;
     procedure get_all_accounts_p(p_accounts out ACCOUNT_ARRAY_T);
+
+    function dummy_fun(p_account in account_t) return account_t;
+    function dummy_array_fun(p_accounts in ACCOUNT_ARRAY_T) return ACCOUNT_ARRAY_T;
+    procedure dummy_proc(p_in_account in ACCOUNT_T, p_out_account out ACCOUNT_T);
+    procedure dummy_array_proc(p_in_accounts in ACCOUNT_ARRAY_T, p_out_accounts out ACCOUNT_ARRAY_T);
 END static_data;
 /
 
@@ -100,6 +105,28 @@ IS
         p_accounts := v_result;
     end get_all_accounts_p;
 
+
+    function dummy_fun(p_account in account_t) return account_t
+        is
+    begin
+        return p_account;
+    end;
+    function dummy_array_fun(p_accounts in ACCOUNT_ARRAY_T) return ACCOUNT_ARRAY_T
+        is
+    begin
+        return p_accounts;
+    end;
+    procedure dummy_proc(p_in_account in ACCOUNT_T, p_out_account out ACCOUNT_T)
+        is
+    begin
+        p_out_account := p_in_account;
+    end;
+
+    procedure dummy_array_proc(p_in_accounts in ACCOUNT_ARRAY_T, p_out_accounts out ACCOUNT_ARRAY_T)
+        is
+    begin
+        p_out_accounts := p_in_accounts;
+    end;
     BEGIN
     dbms_output.put_line('Control is now executing the package initialization part');
 END static_data;

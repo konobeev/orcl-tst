@@ -1,21 +1,21 @@
-package com.example.databasedemo.database.mapper;
+package com.example.databasedemo.database.custom.mapper;
 
-import static java.sql.Types.ARRAY;
+import com.example.databasedemo.models.Account;
+import oracle.jdbc.driver.OracleConnection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.SqlOutParameter;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.stereotype.Service;
 
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Struct;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.SqlOutParameter;
-import org.springframework.jdbc.core.SqlParameter;
-
-import com.example.databasedemo.models.Account;
-import org.springframework.stereotype.Service;
+import static java.sql.Types.ARRAY;
 
 @Service
-public class AccountsMapper extends SqlParameterMapper<Account[], Array> {
+public class AccountArrayMapper extends SqlParameterMapper<Account[], Array> {
     private static final String TYPE_NAME = "ACCOUNT_ARRAY_T";
 
     @Autowired
@@ -48,7 +48,13 @@ public class AccountsMapper extends SqlParameterMapper<Account[], Array> {
             values[i] = mapper.createSqlValue(con, accounts[i]);
         }
 
-        return con.createArrayOf(TYPE_NAME, values);
+        if (con.isWrapperFor(OracleConnection.class)) {
+            OracleConnection oracleConn = con.unwrap(OracleConnection.class);
+            return oracleConn.createOracleArray(TYPE_NAME, values);
+        } else {
+            // recover, not an oracle connection
+            return con.createArrayOf(TYPE_NAME, values);
+        }
     }
 
     @Override

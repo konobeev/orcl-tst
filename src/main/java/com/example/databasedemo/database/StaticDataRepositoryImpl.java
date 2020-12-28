@@ -1,12 +1,12 @@
 package com.example.databasedemo.database;
 
-import com.example.databasedemo.database.mapper.AccountMapper;
-import com.example.databasedemo.database.mapper.AccountsMapper;
+import com.example.databasedemo.database.custom.mapper.AccountArrayMapper;
+import com.example.databasedemo.database.custom.mapper.AccountMapper;
 import com.example.databasedemo.models.Account;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import java.util.*;
 
 @Service
@@ -14,33 +14,33 @@ public class StaticDataRepositoryImpl implements StaticDataRepository {
 
     private final SimpleJdbcCall createAccountCall;
     private final SimpleJdbcCall getAccountsPCall;
-    private final AccountsMapper accountsMapper;
+    private final AccountArrayMapper accountArrayMapper;
     private final SimpleJdbcCall getAccountsFCall;
     private final AccountMapper accountMapper;
 
-    public StaticDataRepositoryImpl(DataSource dataSource,
+    public StaticDataRepositoryImpl(JdbcTemplate jdbcTemplate,
                                     AccountMapper accountMapper,
-                                    AccountsMapper accountsMapper) {
-        this.accountsMapper = Objects.requireNonNull(accountsMapper);
+                                    AccountArrayMapper accountArrayMapper) {
+        this.accountArrayMapper = Objects.requireNonNull(accountArrayMapper);
         this.accountMapper = Objects.requireNonNull(accountMapper);
 
-        this.createAccountCall = new SimpleJdbcCall(dataSource)
+        this.createAccountCall = new SimpleJdbcCall(jdbcTemplate)
                 .withSchemaName("APP_OWNER")
                 .withCatalogName("STATIC_DATA")
                 .withProcedureName("ADD_ACCOUNT")
                 .declareParameters(accountMapper.createSqlParameter("P_ACCOUNT", false));
 
-        this.getAccountsPCall = new SimpleJdbcCall(dataSource)
+        this.getAccountsPCall = new SimpleJdbcCall(jdbcTemplate)
                 .withSchemaName("APP_OWNER")
                 .withCatalogName("STATIC_DATA")
                 .withProcedureName("GET_ALL_ACCOUNTS_P")
-                .declareParameters(accountsMapper.createSqlParameter("P_ACCOUNTS", true));
+                .declareParameters(accountArrayMapper.createSqlParameter("P_ACCOUNTS", true));
 
-        this.getAccountsFCall = new SimpleJdbcCall(dataSource)
+        this.getAccountsFCall = new SimpleJdbcCall(jdbcTemplate)
                 .withSchemaName("APP_OWNER")
                 .withCatalogName("STATIC_DATA")
                 .withFunctionName("GET_ALL_ACCOUNTS_F")
-                .declareParameters(accountsMapper.createSqlParameter("RETURN", true));
+                .declareParameters(accountArrayMapper.createSqlParameter("RETURN", true));
     }
 
 
@@ -59,7 +59,7 @@ public class StaticDataRepositoryImpl implements StaticDataRepository {
             Account[] accounts = (Account[]) map.get("P_ACCOUNTS");
             return Arrays.asList(accounts);
 
-        } catch (Throwable t){
+        } catch (Throwable t) {
             return Collections.emptyList();
         }
     }
@@ -67,10 +67,12 @@ public class StaticDataRepositoryImpl implements StaticDataRepository {
     @Override
     public List<Account> getAccountsFun() {
         try {
-            Account[] accounts = (Account[])getAccountsFCall.executeFunction(Object.class);
+            Account[] accounts = (Account[]) getAccountsFCall.executeFunction(Object.class);
             return Arrays.asList(accounts);
-        } catch (Throwable t){
+        } catch (Throwable t) {
             return Collections.emptyList();
         }
     }
+
+
 }

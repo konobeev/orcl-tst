@@ -1,4 +1,4 @@
-package com.example.databasedemo.database.mapper;
+package com.example.databasedemo.database.custom.mapper;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
