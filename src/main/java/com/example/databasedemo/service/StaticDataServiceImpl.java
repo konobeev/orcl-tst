@@ -32,7 +32,7 @@ public class StaticDataServiceImpl implements StaticDataService {
 
     @Override
     public List<Account> getAccounts() {
-        testCustomRepo();
+        testExtRepo();
         List<Account> accounts = repository.getAccounts();
         return accounts;
     }
@@ -53,8 +53,9 @@ public class StaticDataServiceImpl implements StaticDataService {
         Account[] accounts = new Account[1];
         accounts[0] = account;
 
-        Account accFun = wrapper(extAccountRepository::callFun, account);
         Account accProc = wrapper(extAccountRepository::callProc, account);
+        Account accFun = wrapper(extAccountRepository::callFun, account);
+
         Account[] arrFun = wrapper(extAccountRepository::callArrFun, accounts);
         Account[] arrProc = wrapper(extAccountRepository::callArrProc, accounts);
     }
